@@ -69,6 +69,7 @@ import { isSitePreviewable } from 'state/sites/selectors';
 import { removep } from 'lib/formatting';
 import QuickSaveButtons from 'post-editor/editor-ground-control/quick-save-buttons';
 import EditorRevisionsDialog from 'post-editor/editor-revisions/dialog';
+import PageViewTracker from 'lib/analytics/page-view-tracker';
 
 export const PostEditor = createReactClass( {
 	displayName: 'PostEditor',
@@ -88,6 +89,8 @@ export const PostEditor = createReactClass( {
 		hasBrokenPublicizeConnection: PropTypes.bool,
 		editPost: PropTypes.func,
 		type: PropTypes.string,
+		analyticsPath: PropTypes.string,
+		analyticsTitle: PropTypes.string,
 	},
 
 	_previewWindow: null,
@@ -289,6 +292,7 @@ export const PostEditor = createReactClass( {
 		} );
 		return (
 			<div className={ classes }>
+				<PageViewTracker path={ this.props.analyticsPath } title={ this.props.analyticsTitle } />
 				<QueryPreferences />
 				<EditorConfirmationSidebar
 					handlePreferenceChange={ this.handleConfirmationSidebarPreferenceChange }
