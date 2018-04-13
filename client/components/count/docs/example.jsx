@@ -10,6 +10,8 @@ import React from 'react';
  */
 import Count from 'components/count';
 import ComponentPlayground from 'devdocs/design/component-playground';
+
+export const countCode = '<Count primary count={ 65366 } />';
 const code = `<div>
 
 
@@ -18,7 +20,7 @@ const scope = { Count };
 const count = () => (
 	<div>
 		<ComponentPlayground code={ '<Count count={ 65365 } />' } scope={ scope } />
-		<ComponentPlayground code={ '<Count primary count={ 65366 } />' } scope={ scope } />
+		<ComponentPlayground code={ countCode } scope={ scope } />
 	</div>
 );
 
