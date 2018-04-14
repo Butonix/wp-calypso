@@ -42,7 +42,6 @@ import domains from './domains/reducer';
 import geo from './geo/reducer';
 import googleAppsUsers from './google-apps-users/reducer';
 import googleMyBusiness from './google-my-business/reducer';
-import googleMyBusinessStats from './google-my-business/stats/reducer';
 import help from './help/reducer';
 import i18n from './i18n/reducer';
 import invites from './invites/reducer';
@@ -131,7 +130,6 @@ const reducers = {
 	geo,
 	googleAppsUsers,
 	googleMyBusiness,
-	googleMyBusinessStats,
 	happinessEngineers,
 	happychat,
 	help,
