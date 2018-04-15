@@ -30,6 +30,7 @@ import QueryActivityLog from 'components/data/query-activity-log';
 import QueryRewindState from 'components/data/query-rewind-state';
 import QuerySiteSettings from 'components/data/query-site-settings'; // For site time offset
 import QueryRewindBackupStatus from 'components/data/query-rewind-backup-status';
+import QueryJetpackPlugins from 'components/data/query-jetpack-plugins/';
 import SidebarNavigation from 'my-sites/sidebar-navigation';
 import StatsNavigation from 'blocks/stats-navigation';
 import StatsPeriodNavigation from 'my-sites/stats/stats-period-navigation';
@@ -41,6 +42,7 @@ import { getSiteSlug, getSiteTitle } from 'state/sites/selectors';
 import { recordTracksEvent, withAnalytics } from 'state/analytics/actions';
 import {
 	activityLogRequest,
+	getRewindRestoreProgress,
 	rewindRequestDismiss,
 	rewindRestore,
 	rewindBackupDismiss,
@@ -228,7 +230,20 @@ class ActivityLog extends Component {
 
 	componentDidMount() {
 		window.scrollTo( 0, 0 );
+		this.findExistingRewind( this.props );
 	}
+
+	componentDidUpdate( prevProps ) {
+		if ( ! prevProps.rewindState.rewind && this.props.rewindState.rewind ) {
+			this.findExistingRewind( this.props );
+		}
+	}
+
+	findExistingRewind = ( { siteId, rewindState } ) => {
+		if ( rewindState.rewind ) {
+			this.props.getRewindRestoreProgress( siteId, rewindState.rewind.restoreId );
+		}
+	};
 
 	getStartMoment() {
 		const { gmtOffset, startDate, timezone } = this.props;
@@ -599,7 +614,8 @@ class ActivityLog extends Component {
 			<Main wideLayout>
 				<PageViewTracker path="/stats/activity/:site" title="Stats > Activity" />
 				<DocumentHead title={ translate( 'Stats' ) } />
-				<QueryRewindState siteId={ siteId } />
+				{ siteId && <QueryRewindState siteId={ siteId } /> }
+				{ siteId && <QueryJetpackPlugins siteIds={ [ siteId ] } /> }
 				{ '' !== rewindNoThanks && rewindIsNotReady
 					? siteId && <ActivityLogSwitch siteId={ siteId } redirect={ rewindNoThanks } />
 					: this.getActivityLog() }
@@ -663,6 +679,7 @@ export default connect(
 				recordTracksEvent( 'calypso_activitylog_backup_cancel' ),
 				rewindBackupDismiss( siteId )
 			),
+		getRewindRestoreProgress,
 		rewindRequestDismiss: siteId =>
 			withAnalytics(
 				recordTracksEvent( 'calypso_activitylog_restore_cancel' ),

@@ -12,20 +12,14 @@ import { translate } from 'i18n-calypso';
 import { dispatchRequest } from 'state/data-layer/wpcom-http/utils';
 import { errorNotice } from 'state/notices/actions';
 import { http } from 'state/data-layer/wpcom-http/actions';
-import {
-	JETPACK_ONBOARDING_SETTINGS_REQUEST,
-	JETPACK_ONBOARDING_SETTINGS_SAVE,
-} from 'state/action-types';
-import { getJetpackOnboardingSettings, getSiteUrl, getUnconnectedSiteUrl } from 'state/selectors';
+import { JETPACK_SETTINGS_REQUEST, JETPACK_SETTINGS_SAVE } from 'state/action-types';
+import { getJetpackSettings, getSiteUrl, getUnconnectedSiteUrl } from 'state/selectors';
 import {
 	filterSettingsByActiveModules,
 	normalizeSettings,
 	sanitizeSettings,
 } from 'state/jetpack/settings/utils';
-import {
-	saveJetpackSettingsSuccess,
-	updateJetpackSettings,
-} from 'state/jetpack-onboarding/actions';
+import { saveJetpackSettingsSuccess, updateJetpackSettings } from 'state/jetpack/settings/actions';
 import { trailingslashit } from 'lib/route';
 
 export const MAX_WOOCOMMERCE_INSTALL_RETRIES = 2;
@@ -95,7 +89,7 @@ export const announceRequestFailure = ( { dispatch, getState }, { siteId } ) => 
  */
 export const saveJetpackSettings = ( { dispatch, getState }, action ) => {
 	const { settings, siteId } = action;
-	const previousSettings = getJetpackOnboardingSettings( getState(), siteId );
+	const previousSettings = getJetpackSettings( getState(), siteId );
 
 	// We don't want Jetpack Onboarding credentials in our Jetpack Settings Redux state.
 	const settingsWithoutCredentials = omit( settings, [ 'onboarding.jpUser', 'onboarding.token' ] );
@@ -115,7 +109,7 @@ export const saveJetpackSettings = ( { dispatch, getState }, action ) => {
 			},
 			{
 				...action,
-				meta: { ...action.meta, settings: { onboarding: previousSettings } },
+				meta: { ...action.meta, settings: previousSettings },
 			}
 		)
 	);
@@ -177,7 +171,7 @@ export const retryOrAnnounceSaveFailure = ( { dispatch }, action, { message: err
 };
 
 export default {
-	[ JETPACK_ONBOARDING_SETTINGS_REQUEST ]: [
+	[ JETPACK_SETTINGS_REQUEST ]: [
 		dispatchRequest(
 			requestJetpackSettings,
 			receiveJetpackOnboardingSettings,
@@ -187,7 +181,7 @@ export default {
 			}
 		),
 	],
-	[ JETPACK_ONBOARDING_SETTINGS_SAVE ]: [
+	[ JETPACK_SETTINGS_SAVE ]: [
 		dispatchRequest( saveJetpackSettings, handleSaveSuccess, retryOrAnnounceSaveFailure ),
 	],
 };

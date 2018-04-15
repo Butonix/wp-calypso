@@ -14,15 +14,9 @@ import {
 	retryOrAnnounceSaveFailure,
 	fromApi,
 } from '../';
-import {
-	JETPACK_ONBOARDING_SETTINGS_SAVE,
-	JETPACK_ONBOARDING_SETTINGS_UPDATE,
-} from 'state/action-types';
+import { JETPACK_SETTINGS_SAVE, JETPACK_SETTINGS_UPDATE } from 'state/action-types';
 import { normalizeSettings } from 'state/jetpack/settings/utils';
-import {
-	saveJetpackSettingsSuccess,
-	updateJetpackSettings,
-} from 'state/jetpack-onboarding/actions';
+import { saveJetpackSettingsSuccess, updateJetpackSettings } from 'state/jetpack/settings/actions';
 
 describe( 'requestJetpackSettings()', () => {
 	const dispatch = jest.fn();
@@ -31,7 +25,7 @@ describe( 'requestJetpackSettings()', () => {
 	const siteId = 12345678;
 
 	const action = {
-		type: JETPACK_ONBOARDING_SETTINGS_UPDATE,
+		type: JETPACK_SETTINGS_UPDATE,
 		siteId,
 	};
 
@@ -210,11 +204,11 @@ describe( 'saveJetpackSettings()', () => {
 	};
 
 	const getState = () => ( {
-		jetpackOnboarding: { settings: { [ 12345678 ]: previousSettings } },
+		jetpack: { settings: { [ 12345678 ]: previousSettings } },
 	} );
 
 	const action = {
-		type: JETPACK_ONBOARDING_SETTINGS_SAVE,
+		type: JETPACK_SETTINGS_SAVE,
 		siteId,
 		settings,
 	};
@@ -264,7 +258,7 @@ describe( 'handleSaveFailure()', () => {
 	const dispatch = jest.fn();
 	const siteId = 12345678;
 	const action = {
-		type: JETPACK_ONBOARDING_SETTINGS_SAVE,
+		type: JETPACK_SETTINGS_SAVE,
 		siteId,
 		settings: {
 			siteTitle: 'My Awesome Site',
@@ -303,7 +297,7 @@ describe( 'retryOrAnnounceSaveFailure()', () => {
 		},
 	};
 	const action = {
-		type: JETPACK_ONBOARDING_SETTINGS_SAVE,
+		type: JETPACK_SETTINGS_SAVE,
 		siteId,
 		settings,
 		meta: {
@@ -324,7 +318,7 @@ describe( 'retryOrAnnounceSaveFailure()', () => {
 			expect.objectContaining( {
 				settings,
 				siteId,
-				type: JETPACK_ONBOARDING_SETTINGS_SAVE,
+				type: JETPACK_SETTINGS_SAVE,
 				meta: {
 					dataLayer: {
 						retryCount: 1,
